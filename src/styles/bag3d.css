@@ -1,0 +1,185 @@
+/* ==========================================================================
+   Sacola 3D Origami de Luxo — Lara Luxo Modas
+   ========================================================================== */
+
+.bag3d {
+  --w: 154px;
+  --h: 184px;
+  --d: 60px;
+  width: calc(var(--w) * 1.8);
+  height: calc(var(--h) + 120px);
+  margin: 0 auto;
+  perspective: 900px;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.bag3d__obj {
+  position: relative;
+  width: var(--w);
+  height: var(--h);
+  transform-style: preserve-3d;
+  transform: rotateX(-12deg) rotateY(-28deg);
+  animation: bagIn 2.4s var(--ease-out) both, bagFloat 5s ease-in-out 2.4s infinite;
+  margin-top: 46px;
+}
+
+.bag3d__face {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--w);
+  height: var(--h);
+  background: linear-gradient(180deg, #fffdfb, #f6efe9);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 2px;
+}
+
+.bag3d__front {
+  transform: translateZ(calc(var(--d) / 2));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  box-shadow: inset 0 -18px 28px -22px rgba(78, 7, 23, 0.25);
+  border: 1px solid rgba(232, 188, 176, 0.2);
+}
+
+.bag3d__back {
+  transform: rotateY(180deg) translateZ(calc(var(--d) / 2));
+  background: linear-gradient(180deg, #f7f0ea, #efe5dd);
+}
+
+.bag3d__side {
+  width: var(--d);
+  left: calc((var(--w) - var(--d)) / 2);
+  background: linear-gradient(90deg, #efe5dd, #e6d8cd);
+}
+
+.bag3d__left {
+  transform: rotateY(-90deg) translateZ(calc(var(--w) / 2));
+}
+
+.bag3d__right {
+  transform: rotateY(90deg) translateZ(calc(var(--w) / 2));
+}
+
+.bag3d__bottom {
+  height: var(--d);
+  top: calc((var(--h) - var(--d)) / 2);
+  transform: rotateX(-90deg) translateZ(calc(var(--h) / 2));
+  background: #e2d3c8;
+}
+
+.bag3d__front .logo {
+  transform: scale(0.78);
+}
+
+.bag3d__front small {
+  font-size: 7.5px;
+  letter-spacing: 0.22em;
+  color: var(--rose-deep);
+  text-transform: uppercase;
+  margin-top: 8px;
+  font-weight: 700;
+}
+
+.bag3d__handle {
+  position: absolute;
+  left: 50%;
+  top: -58px;
+  width: 80px;
+  height: 66px;
+  margin-left: -40px;
+  color: var(--vinho);
+  overflow: visible;
+}
+
+.bag3d__handle--f {
+  transform: translateZ(calc(var(--d) / 2 - 6px));
+}
+
+.bag3d__handle--b {
+  transform: translateZ(calc(var(--d) / -2 + 6px));
+  color: #7a2a3b;
+}
+
+.bag3d__tissue {
+  position: absolute;
+  left: 50%;
+  top: -30px;
+  width: 64px;
+  height: 58px;
+  margin-left: -32px;
+  background: linear-gradient(160deg, #f7dcd6, #eebfb5);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  opacity: 0.95;
+}
+
+.bag3d__tissue--1 {
+  transform: translateZ(6px) rotateZ(-14deg) translateX(-18px);
+}
+
+.bag3d__tissue--2 {
+  transform: translateZ(-4px) rotateZ(12deg) translateX(20px);
+  background: linear-gradient(200deg, #fbe9e5, #e9b5aa);
+}
+
+.bag3d__shadow {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  width: 170px;
+  height: 26px;
+  transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgba(43, 15, 20, 0.28), transparent);
+  animation: shadowPulse 5s ease-in-out 2.4s infinite;
+}
+
+@keyframes bagIn {
+  0% { transform: translateY(-70px) rotateX(-12deg) rotateY(-388deg); opacity: 0; }
+  25% { opacity: 1; }
+  100% { transform: rotateX(-12deg) rotateY(-28deg); }
+}
+
+@keyframes bagFloat {
+  0%, 100% { transform: rotateX(-12deg) rotateY(-28deg) translateY(0); }
+  50% { transform: rotateX(-10deg) rotateY(-14deg) translateY(-8px); }
+}
+
+@keyframes shadowPulse {
+  0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+  50% { opacity: 0.75; transform: translateX(-50%) scale(0.92); }
+}
+
+.bag3d--sm {
+  --w: 98px;
+  --h: 118px;
+  --d: 40px;
+  height: 230px;
+}
+
+.bag3d--sm .bag3d__front .logo {
+  transform: scale(0.5);
+}
+
+.bag3d--sm .bag3d__front small {
+  display: none;
+}
+
+.bag3d--sm .bag3d__handle {
+  width: 54px;
+  height: 46px;
+  margin-left: -27px;
+  top: -40px;
+}
+
+.bag3d--sm .bag3d__tissue {
+  width: 44px;
+  height: 40px;
+  margin-left: -22px;
+  top: -20px;
+}

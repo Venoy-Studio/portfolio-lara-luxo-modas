@@ -1,0 +1,322 @@
+/* ==========================================================================
+   Arara Giratória 3D — Boutique Clothes Rack
+   ========================================================================== */
+
+.arara {
+  position: relative;
+  margin: 18px auto 0;
+  max-width: 1200px;
+  --card-w: 154px;
+  --card-h: 206px;
+  --r: 260px;
+  --step: 36deg;
+  --hanger-h: calc(var(--card-w) * 0.22);
+}
+
+.arara__stage {
+  position: relative;
+  height: calc(var(--card-h) + 130px);
+  perspective: var(--persp, 900px);
+  perspective-origin: 50% 16%;
+  touch-action: pan-y;
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+  outline: none;
+  overflow: hidden;
+}
+
+.arara__stage.is-drag {
+  cursor: grabbing;
+}
+
+.arara__stage:focus-visible {
+  outline: 2px solid var(--rose-2);
+  outline-offset: -4px;
+  border-radius: var(--radius-lg);
+}
+
+.arara__scene {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 22px);
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(-9deg);
+  z-index: 1;
+}
+
+.arara__ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.arara__rail {
+  position: absolute;
+  left: calc(var(--r) * -1 - 4px);
+  top: calc(var(--r) * -1 - 4px);
+  width: calc(var(--r) * 2 + 8px);
+  height: calc(var(--r) * 2 + 8px);
+  border-radius: 50%;
+  border: 2px solid transparent;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(calc(var(--card-h) / -2 - var(--hanger-h) + 5px)) rotateX(90deg);
+}
+
+.arara__svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.arara__svg--back {
+  z-index: 0;
+}
+
+.arara__svg--front {
+  z-index: 2;
+}
+
+/* Card Individual da Arara */
+.look {
+  position: absolute;
+  left: calc(var(--card-w) / -2);
+  top: calc(var(--card-h) / -2);
+  width: var(--card-w);
+  height: var(--card-h);
+  transform: rotateY(calc(var(--i) * var(--step))) translateZ(var(--r));
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: flat;
+  border-radius: 12px;
+  padding: 0;
+  text-align: center;
+  transition: filter 0.25s ease;
+}
+
+.look__hanger {
+  position: absolute;
+  left: 17%;
+  top: calc(var(--hanger-h) * -1 + 8px);
+  width: 66%;
+  height: var(--hanger-h);
+  color: var(--rose-2);
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.look__img {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--vinho-soft);
+  box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.5);
+}
+
+.look__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+/* Efeito de iluminação 3D */
+.look__img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--vinho-deep);
+  opacity: var(--shade, 0);
+  transition: opacity 0.2s linear;
+}
+
+/* Moldura dourada para o look frontal ativo */
+.look__img::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 2px var(--rose-2), 0 0 20px rgba(232, 188, 176, 0.35);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.look.is-front .look__img::before {
+  opacity: 1;
+}
+
+/* Sombra de Piso e Dica de Arraste */
+.arara__floor {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  width: calc(var(--r) * 2.1);
+  height: 48px;
+  transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgba(20, 1, 5, 0.7), rgba(20, 1, 5, 0));
+  pointer-events: none;
+}
+
+.arara__hint {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--rose-text);
+  background: rgba(34, 4, 10, 0.7);
+  border: 1px solid rgba(232, 188, 176, 0.3);
+  padding: 7px 16px;
+  border-radius: var(--radius-full);
+  transition: opacity 0.5s, transform 0.5s;
+  pointer-events: none;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+}
+
+.arara__hint .i {
+  width: 16px;
+  height: 16px;
+  animation: swipe 1.8s var(--ease-out) infinite;
+}
+
+.arara__hint.is-off {
+  opacity: 0;
+  transform: translate(-50%, 8px);
+}
+
+@keyframes swipe {
+  0%, 100% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+}
+
+/* Painel de Informações do Look Ativo */
+.arara__info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px 24px;
+  min-height: 136px;
+}
+
+.arara__count {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--rose-2);
+  font-weight: 600;
+}
+
+.arara__name {
+  font-family: var(--f-serif);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.2;
+  min-height: 1.2em;
+  color: var(--creme);
+}
+
+.arara__price {
+  font-size: 14.5px;
+  color: var(--rose-text);
+}
+
+.arara__price b {
+  color: var(--white);
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.arara__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.arara__arrow {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid rgba(232, 188, 176, 0.45);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--rose-1);
+  display: grid;
+  place-items: center;
+  transition: all 0.25s var(--ease-spring);
+  backdrop-filter: blur(6px);
+}
+
+.arara__arrow:hover {
+  background: rgba(232, 188, 176, 0.2);
+  border-color: var(--rose-1);
+  transform: scale(1.08);
+}
+
+.arara__arrow:active {
+  transform: scale(0.94);
+}
+
+.arara__controls .btn {
+  min-height: 46px;
+}
+
+/* Fallback sem 3D */
+.arara--flat .arara__stage {
+  height: auto;
+  perspective: none;
+  overflow-x: auto;
+  cursor: auto;
+  scroll-snap-type: x mandatory;
+  padding: 40px 16px 10px;
+}
+
+.arara--flat .arara__scene,
+.arara--flat .arara__ring {
+  position: static;
+  transform: none !important;
+  display: flex;
+  gap: 14px;
+  width: auto;
+  height: auto;
+}
+
+.arara--flat .look {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  flex: none;
+  scroll-snap-align: center;
+}
+
+.arara--flat .arara__rail,
+.arara--flat .arara__svg,
+.arara--flat .arara__floor,
+.arara--flat .arara__hint {
+  display: none;
+}
+
+@media (min-width: 960px) {
+  .arara__name {
+    font-size: 26px;
+  }
+}
